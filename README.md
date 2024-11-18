@@ -1,4 +1,4 @@
-# Jogjappetite
+# Jogjappetite Mobile
 ## Anggota Kelompok C11
 - [Dinda Dinanti](https://github.com/dinan26) (2306245440)
 - [Irfan Rizqi Nurrahman ](https://github.com/irfanrizqinr)(2306216724)
@@ -144,4 +144,7 @@ Pada aplikasi kami, terdapat tiga jenis penggunanya, yaitu:
 
 
 ## Tautan Deployment Aplikasi
-----
+
+
+## Alur Pengintegrasian dengan Web Service
+
