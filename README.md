@@ -148,3 +148,8 @@ Pada aplikasi kami, terdapat tiga jenis penggunanya, yaitu:
 
 ## Alur Pengintegrasian dengan Web Service
 
+
+Kelompok kami menggunakan platform Jogjappetite untuk mengintegrasikan layanan web guna menghadirkan pengalaman terbaik bagi pengguna dalam menjelajahi dunia kuliner di Yogyakarta. Data dalam format JSON dari modul-modul seperti *Explore*, *Search*, *Ratings*, *Add Restaurant*, dan *Favorite* diambil menggunakan dependensi HTTP. Data yang dikumpulkan kemudian dikonversi ke dalam model Dart agar dapat ditampilkan melalui widget FutureBuilder di aplikasi mobile kami. 
+
+
+Selain itu, kami juga mengimplementasikan fitur autentikasi untuk pengguna menggunakan package `pbp_django_auth`, sehingga pengguna dapat masuk ke akun mereka dan menikmati fitur-fitur personal seperti tambah favorite restoran, memberikan ulasan, serta menambahkan tempat makan baru bagi pemilik restoran. Pendekatan ini memastikan bahwa Jogjappetite tidak hanya menyediakan informasi terkini tentang tempat makan di Jogja, tetapi juga memberikan fleksibilitas dan interaktivitas bagi pengguna.
