@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/screens/authentication/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 
 // DUMMY PAGE
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: SearchPage(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
