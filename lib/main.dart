@@ -6,9 +6,7 @@ import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 
 // DUMMY PAGE
 void main() {
-  runApp(MaterialApp(
-    home: SearchPage(),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +20,7 @@ class MyApp extends StatelessWidget {
         return request;
       },
       child: MaterialApp(
-        title: 'Jogjappetite',
+        // title: 'Jogjappetite',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSwatch(
