@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   // Informasi untuk Jogjappetite
   final String tagline = 'Find Your Favorite Food!';
@@ -115,6 +115,8 @@ class ItemHomepage {
   final String imageUrl;
 
   ItemHomepage(this.title, this.imageUrl);
+
+  get label => null;
 }
 
 class ItemCard extends StatelessWidget {
