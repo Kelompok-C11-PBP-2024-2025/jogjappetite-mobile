@@ -153,3 +153,8 @@ Kelompok kami menggunakan platform Jogjappetite untuk mengintegrasikan layanan w
 
 
 Selain itu, kami juga mengimplementasikan fitur autentikasi untuk pengguna menggunakan package `pbp_django_auth`, sehingga pengguna dapat masuk ke akun mereka dan menikmati fitur-fitur personal seperti tambah favorite restoran, memberikan ulasan, serta menambahkan tempat makan baru bagi pemilik restoran. Pendekatan ini memastikan bahwa Jogjappetite tidak hanya menyediakan informasi terkini tentang tempat makan di Jogja, tetapi juga memberikan fleksibilitas dan interaktivitas bagi pengguna.
+
+
+## Link Menuju Rencana Desain 
+https://www.figma.com/design/7nFcxqx8UmlQKmfXAMRrXT/mockup-jogjappetite?node-id=824-1221&node-type=canvas&t=kyuuos03tZJJ0WWe-0 
+
