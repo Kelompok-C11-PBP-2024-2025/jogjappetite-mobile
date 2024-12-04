@@ -6,9 +6,7 @@ import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 
 // DUMMY PAGE
 void main() {
-  runApp(MaterialApp(
-    home: SearchPage(),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -35,7 +33,7 @@ class MyApp extends StatelessWidget {
               const Color(0xFFFFF8F0), // Latar belakang soft peach
           cardColor: const Color(0xFFFFFFFF), // Warna kartu
         ),
-        home: const LoginPage(),
+        home: SearchPage(),
       ),
     );
   }

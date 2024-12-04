@@ -1,9 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/main.dart';
+import 'package:jogjappetite_mobile/models/search_history.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  TextEditingController _searchController = TextEditingController();
+  // List<SearchHistory> _recentSearches = [];
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchHistory().then((history) {
+  //     setState(() {
+  //       _recentSearches = history;
+  //     });
+  //   });
+  // }
+
+  Future<List<SearchHistory>> fetchHistory(CookieRequest request) async {
+    final response = await request.get('http://127.0.0.1:8000/search/json/');
+    
+    // Melakukan decode response menjadi bentuk json
+    var data = response;
+    
+    // Melakukan konversi data json menjadi object SearchHistory
+    List<SearchHistory> listHistory = [];
+    for (var d in data) {
+      if (d != null) {
+        listHistory.add(SearchHistory.fromJson(d));
+      }
+    }
+    return listHistory;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -93,7 +131,6 @@ class SearchPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // Recent Searches Section
             Text(
               'Recent searches',
               style: TextStyle(
@@ -102,44 +139,32 @@ class SearchPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.search),
-                  title: Text('Nasi Goreng'),
-                  onTap: () {
-                    // TODO: Handle recent search tap
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.search),
-                  title: Text('Mie Ayam'),
-                  onTap: () {
-                    // TODO: Handle recent search tap
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.search),
-                  title: Text('Seblak'),
-                  onTap: () {
-                    // TODO: Handle recent search tap
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.search),
-                  title: Text('nasi alo'),
-                  onTap: () {
-                    // TODO: Handle recent search tap
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.search),
-                  title: Text('ayam kremes ainah'),
-                  onTap: () {
-                    // TODO: Handle recent search tap
-                  },
-                ),
-              ],
+            Expanded(
+              child: FutureBuilder<List<SearchHistory>>(
+                future: fetchHistory(request), // Fetch the recent searches
+                builder: (context, AsyncSnapshot<List<SearchHistory>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error fetching data'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No recent searches'));
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) => ListTile(
+                        leading: Icon(Icons.search),
+                        title: Text(snapshot.data![index].fields.query),
+                        onTap: () {
+                          setState(() {
+                            _searchController.text = snapshot.data![index].fields.query;
+                          });
+                        },
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
             SizedBox(height: 20),
 
