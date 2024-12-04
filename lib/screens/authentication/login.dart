@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jogjappetite_mobile/screens/authentication/menu.dart';
+import 'package:jogjappetite_mobile/screens/home_dummy.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, const Color(0xFFF5F5F5)],
+            colors: [Colors.white, Color(0xFFF5F5F5)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -184,8 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomePage()),
+                                              builder: (context) => HomePage()),
                                         );
                                         ScaffoldMessenger.of(context)
                                           ..hideCurrentSnackBar()
@@ -270,27 +271,6 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home Page"),
-        backgroundColor: const Color(0xFFDC2626),
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text(
-          "Welcome to Jogjappetite!",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
     );
