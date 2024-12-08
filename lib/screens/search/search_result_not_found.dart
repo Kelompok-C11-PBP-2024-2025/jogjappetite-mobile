@@ -20,7 +20,6 @@ class _SearchResultNotFoundState extends State<SearchResultNotFound> {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     _searchController.text = widget.query;
     
     return Scaffold(
