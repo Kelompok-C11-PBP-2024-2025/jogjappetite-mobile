@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jogjappetite_mobile/screens/ratings/ratings_main.dart';
+import 'package:jogjappetite_mobile/screens/ratings/ratings_main_page.dart';
 import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 
 class BottomNavbar extends StatelessWidget {
@@ -33,7 +33,7 @@ class BottomNavbar extends StatelessWidget {
       label: 'Ratings',
       icon: Icons.star_outline,
       activeIcon: Icons.star,
-      page: const RatingsPage(),
+      page: const RatingsMainPage(),
     ),
     NavigationItem(
       label: 'Restaurants',
@@ -70,11 +70,6 @@ class BottomNavbar extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Scaffold(
-                        appBar: AppBar(
-                          title: const Text("Jogjappetite"),
-                          backgroundColor: const Color(0xFFDC2626),
-                          foregroundColor: Colors.white,
-                        ),
                         body: items[index].page,
                         bottomNavigationBar: BottomNavbar(
                           currentIndex: index,
