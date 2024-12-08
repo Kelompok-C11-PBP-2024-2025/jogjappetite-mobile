@@ -18,8 +18,6 @@ class _SearchResultRecommendationState extends State<SearchResultRecommendation>
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
     return Scaffold(
       appBar: SearchAppBar(
         searchController: _searchController,

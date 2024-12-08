@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/screens/search/search_functions.dart';
 import 'package:jogjappetite_mobile/screens/search/search_bar.dart';
 import 'package:jogjappetite_mobile/models/search_history.dart';
-import 'package:jogjappetite_mobile/screens/search/search_bar.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert'; // For JSON encoding/decoding
@@ -15,9 +14,37 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _searchController = TextEditingController();
 
+  String? userType; // Add this line
+  bool isLoading = true; // Add this line
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserType(); // Fetch userType when the widget initializes
+  }
+
+  Future<void> _getUserType() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.get('http://127.0.0.1:8000/auth/get-user-type/'); // Replace with your server address
+
+      setState(() {
+        userType = response['user_type'];
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error getting user type: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   Future<List<SearchHistory>> fetchHistory(CookieRequest request) async {
     final response = await request.get('http://127.0.0.1:8000/search/json/');
-    var data = response;
+
+    final data = json.decode(response.body);
+    
     List<SearchHistory> listHistory = [];
     for (var d in data) {
       if (d != null) {
@@ -38,13 +65,30 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+
+    if (isLoading) {
+      return Scaffold(
+        appBar: SearchAppBar(
+          searchController: _searchController,
+          onSaveSearchHistory: (query, req) {},
+          onSearchFood: (query, context) => searchFood(query, context),
+          onSearchRestaurant: (query, context) => searchRestaurant(query, context),
+        ),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: SearchAppBar(
         searchController: _searchController,
-        onSaveSearchHistory: (query, req) => saveSearchHistory(query, req),
-        onSearchFood: (query, req, ctx) => searchFood(query, req, ctx),
-        onSearchRestaurant: (query, req, ctx) => searchRestaurant(query, req, ctx),
+        onSaveSearchHistory: (query, req) {
+          if (userType != null) {
+            saveSearchHistory(query, req);
+          }
+        },
+        onSearchFood: (query, context) => searchFood(query, context),
+        onSearchRestaurant: (query, context) => searchRestaurant(query, context),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,52 +119,61 @@ class _SearchPageState extends State<SearchPage> {
             ),
             SizedBox(height: 20),
 
-            Text(
-              'Recent searches',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                      // Show recent searches only if the user is logged in
+            if (userType != null) ...[
+              Text(
+                'Recent searches',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: FutureBuilder<List<SearchHistory>>(
-                future: fetchHistory(request),
-                builder: (context, AsyncSnapshot<List<SearchHistory>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error fetching data'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No recent searches'));
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final history = snapshot.data![index];
-                        return ListTile(
-                          leading: Icon(Icons.search),
-                          title: Text(history.fields.query),
-                          onTap: () {
-                            setState(() {
-                              _searchController.text = history.fields.query;
-                            });
-                          },
-                          trailing: IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () async {
-                              await deleteSearchHistory(history.pk, request);
-                              setState(() {});
+              SizedBox(height: 10),
+              Expanded(
+                child: FutureBuilder<List<SearchHistory>>(
+                  future: fetchHistory(request),
+                  builder: (context, AsyncSnapshot<List<SearchHistory>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error fetching data'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No recent searches'));
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final history = snapshot.data![index];
+                          return ListTile(
+                            leading: Icon(Icons.search),
+                            title: Text(history.fields.query),
+                            onTap: () {
+                              setState(() {
+                                _searchController.text = history.fields.query;
+                              });
                             },
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
+                            trailing: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () async {
+                                await deleteSearchHistory(history.pk, request);
+                                setState(() {});
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-            SizedBox(height: 20),
+              SizedBox(height: 20),
+            ] else ...[
+              // Optionally, show a message or leave empty
+              Center(
+                child: Text('Log in to see your recent searches.'),
+              ),
+              SizedBox(height: 20),
+            ],
 
             // Based on Your Previous Choices Section
             Text(
