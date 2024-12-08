@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jogjappetite_mobile/screens/explore/explore_page.dart';
 import 'package:jogjappetite_mobile/screens/ratings/ratings_main.dart';
 import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 
@@ -15,7 +16,7 @@ class BottomNavbar extends StatelessWidget {
       label: 'Explore',
       icon: Icons.explore_outlined,
       activeIcon: Icons.explore,
-      page: const Center(child: Text('Explore Page - Coming Soon')),
+      page: ExplorePage(),
     ),
     NavigationItem(
       label: 'Search',
