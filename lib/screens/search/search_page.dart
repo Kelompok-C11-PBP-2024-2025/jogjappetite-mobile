@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:jogjappetite_mobile/main.dart';
+import 'package:jogjappetite_mobile/screens/search/search_functions.dart';
+import 'package:jogjappetite_mobile/screens/search/search_bar.dart';
 import 'package:jogjappetite_mobile/models/search_history.dart';
+import 'package:jogjappetite_mobile/screens/search/search_bar.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert'; // For JSON encoding/decoding
 
 class SearchPage extends StatefulWidget {
   @override
@@ -11,25 +14,10 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _searchController = TextEditingController();
-  // List<SearchHistory> _recentSearches = [];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   fetchHistory().then((history) {
-  //     setState(() {
-  //       _recentSearches = history;
-  //     });
-  //   });
-  // }
 
   Future<List<SearchHistory>> fetchHistory(CookieRequest request) async {
     final response = await request.get('http://127.0.0.1:8000/search/json/');
-    
-    // Melakukan decode response menjadi bentuk json
     var data = response;
-    
-    // Melakukan konversi data json menjadi object SearchHistory
     List<SearchHistory> listHistory = [];
     for (var d in data) {
       if (d != null) {
@@ -39,75 +27,31 @@ class _SearchPageState extends State<SearchPage> {
     return listHistory;
   }
 
+  Future<void> deleteSearchHistory(int historyId, CookieRequest request) async {
+    await request.post(
+      'http://127.0.0.1:8000/search/delete-history/$historyId/',
+      {},
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0), // Add left padding
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.fastfood,
-                      color: Colors.black54,
-                    ),
-                    onPressed: () {
-                      // TODO: Add food search action
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.restaurant,
-                    color: Colors.black54,
-                  ),
-                  onPressed: () {
-                    // TODO: Add restaurant search action
-                  },
-                ),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search restaurants or food',
-                      hintStyle: TextStyle(
-                        color: Colors.black45,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    color: Colors.black54,
-                  ),
-                  onPressed: () {
-                    // TODO: Add clear text action
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
+      appBar: SearchAppBar(
+        searchController: _searchController,
+        onSaveSearchHistory: (query, req) => saveSearchHistory(query, req),
+        onSearchFood: (query, req, ctx) => searchFood(query, req, ctx),
+        onSearchRestaurant: (query, req, ctx) => searchRestaurant(query, req, ctx),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Horizontally Scrollable Category Chips
+            // Category Chips (unchanged)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -141,7 +85,7 @@ class _SearchPageState extends State<SearchPage> {
             SizedBox(height: 10),
             Expanded(
               child: FutureBuilder<List<SearchHistory>>(
-                future: fetchHistory(request), // Fetch the recent searches
+                future: fetchHistory(request),
                 builder: (context, AsyncSnapshot<List<SearchHistory>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
@@ -152,15 +96,25 @@ class _SearchPageState extends State<SearchPage> {
                   } else {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => ListTile(
-                        leading: Icon(Icons.search),
-                        title: Text(snapshot.data![index].fields.query),
-                        onTap: () {
-                          setState(() {
-                            _searchController.text = snapshot.data![index].fields.query;
-                          });
-                        },
-                      ),
+                      itemBuilder: (context, index) {
+                        final history = snapshot.data![index];
+                        return ListTile(
+                          leading: Icon(Icons.search),
+                          title: Text(history.fields.query),
+                          onTap: () {
+                            setState(() {
+                              _searchController.text = history.fields.query;
+                            });
+                          },
+                          trailing: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () async {
+                              await deleteSearchHistory(history.pk, request);
+                              setState(() {});
+                            },
+                          ),
+                        );
+                      },
                     );
                   }
                 },
