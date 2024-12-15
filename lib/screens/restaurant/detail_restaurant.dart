@@ -24,6 +24,7 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
   String? error;
   Restaurant? restaurant;
   String? profileType;
+  List<Review> reviews = [];
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
         setState(() {
           restaurant = data.restaurant;
           profileType = data.profileType;
+          reviews = data.reviews;
           isLoading = false;
         });
       } else {
@@ -217,7 +219,7 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
                           ),
                             DetailItem(
                             label: 'Total Ulasan',
-                            value: '0',
+                            value: reviews.length.toString(),
                           ),
                             DetailItem(
                             label: 'Rating Rata-rata',
@@ -227,50 +229,85 @@ class _DetailRestaurantPageState extends State<DetailRestaurantPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Statistics Card
-                  Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ulasan',
-                            style: GoogleFonts.outfit(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                  Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'Customer Ratings',
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ),
+                  // Customer Reviews Section
+                  if (reviews.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text('No reviews yet'),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      height: 180,
+                      child: PageView.builder(
+                        itemCount: reviews.length,
+                        itemBuilder: (context, index) {
+                          final review = reviews[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        child: Text(review.userInitials),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              review.username,
+                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            Row(
+                                              children: List.generate(
+                                                5,
+                                                (index) => Icon(
+                                                  Icons.star,
+                                                  size: 16,
+                                                  color: index < review.rating
+                                                      ? Colors.amber
+                                                      : Colors.grey[300],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(review.menuReview),
+                                  if (review.pesanRating.isNotEmpty) ...[
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      review.pesanRating,
+                                      style: TextStyle(color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ),
-                          ),
-                            const DetailItem(
-                            label: 'Total Ulasan',
-                            value: 'Coming Soon',
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RestaurantRatingsPage(
-                            restaurantId: restaurant!.id,
-                            restaurantName: restaurant!.namaRestoran,
-                          ),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 48),
-                    ),
-                    child: const Text('View Ratings'),
-                  ),
                 ],
               ),
             ),

@@ -109,22 +109,66 @@ class DetailRestaurantResponse {
     bool success;
     Restaurant restaurant;
     String profileType;
+    List<Review> reviews;
 
     DetailRestaurantResponse({
         required this.success,
         required this.restaurant,
         required this.profileType,
+        required this.reviews,
     });
 
     factory DetailRestaurantResponse.fromJson(Map<String, dynamic> json) => DetailRestaurantResponse(
         success: json["success"],
         restaurant: Restaurant.fromJson(json["restaurant"]),
         profileType: json["profile_type"],
+        reviews: List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "success": success,
         "restaurant": restaurant.toJson(),
         "profile_type": profileType,
+        "reviews": List<dynamic>.from(reviews.map((x) => x.toJson())),
+    };
+}
+
+class Review {
+    int id;
+    String userInitials;
+    String username;
+    String menuReview;
+    int rating;
+    String pesanRating;
+    String createdAt;
+
+    Review({
+        required this.id,
+        required this.userInitials,
+        required this.username,
+        required this.menuReview,
+        required this.rating,
+        required this.pesanRating,
+        required this.createdAt,
+    });
+
+    factory Review.fromJson(Map<String, dynamic> json) => Review(
+        id: json["id"],
+        userInitials: json["user_initials"],
+        username: json["username"],
+        menuReview: json["menu_review"],
+        rating: json["rating"],
+        pesanRating: json["pesan_rating"],
+        createdAt: json["created_at"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "user_initials": userInitials,
+        "username": username,
+        "menu_review": menuReview,
+        "rating": rating,
+        "pesan_rating": pesanRating,
+        "created_at": createdAt,
     };
 }
