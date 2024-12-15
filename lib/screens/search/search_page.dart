@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jogjappetite_mobile/models/restaurant.dart';
 import 'package:jogjappetite_mobile/screens/search/search_functions.dart';
 import 'package:jogjappetite_mobile/screens/search/search_bar.dart';
 import 'package:jogjappetite_mobile/models/search_history.dart';
@@ -55,7 +56,7 @@ class _SearchPageState extends State<SearchPage> {
       final response = await request.get('http://127.0.0.1:8000/search/json/');
 
       final data = json.decode(response.body);
-      
+
       List<SearchHistory> listHistory = [];
       for (var d in data) {
         if (d != null) {

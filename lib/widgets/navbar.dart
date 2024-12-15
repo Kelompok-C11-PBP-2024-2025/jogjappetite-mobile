@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/screens/authentication/login.dart';
 import 'package:jogjappetite_mobile/screens/authentication/userprofilepage.dart';
 import 'package:jogjappetite_mobile/screens/ratings/ratings_main_page.dart';
+import 'package:jogjappetite_mobile/screens/restaurant/restaurant_page.dart';
 import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
       label: 'Restaurants',
       icon: Icons.restaurant_outlined,
       activeIcon: Icons.restaurant,
-      page: const Center(child: Text('Restaurants Page - Coming Soon')),
+      page: const RestaurantPage()
     ),
   ];
 

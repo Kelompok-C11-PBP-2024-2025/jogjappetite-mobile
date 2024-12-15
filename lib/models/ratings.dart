@@ -1,4 +1,5 @@
 // models/ratings.dart
+import 'package:jogjappetite_mobile/models/restaurant.dart';
 
 class MainPageResponse {
   final List<Rating> latestRatings;
@@ -27,47 +28,6 @@ class MainPageResponse {
           .map((restaurant) => Restaurant.fromJson(restaurant))
           .toList(),
       isAuthenticated: json['is_authenticated'] ?? false,
-    );
-  }
-}
-
-class Restaurant {
-  final int id;
-  final String namaRestoran;
-  final String lokasi;
-  final String jenisSuasana;
-  final int keramaianRestoran;
-  final String jenisPenyajian;
-  final String ayceAtauAlacarte;
-  final int hargaRataRataMakanan;
-  final String gambar;
-  final double averageRating;
-
-  Restaurant({
-    required this.id,
-    required this.namaRestoran,
-    required this.lokasi,
-    required this.jenisSuasana,
-    required this.keramaianRestoran,
-    required this.jenisPenyajian,
-    required this.ayceAtauAlacarte,
-    required this.hargaRataRataMakanan,
-    required this.gambar,
-    required this.averageRating,
-  });
-
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
-      id: json['id'] ?? 0,
-      namaRestoran: json['nama_restoran'] ?? '',
-      lokasi: json['lokasi'] ?? '',
-      jenisSuasana: json['jenis_suasana'] ?? '',
-      keramaianRestoran: json['keramaian_restoran'] ?? 0,
-      jenisPenyajian: json['jenis_penyajian'] ?? '',
-      ayceAtauAlacarte: json['ayce_atau_alacarte'] ?? '',
-      hargaRataRataMakanan: json['harga_rata_rata_makanan'] ?? 0,
-      gambar: json['gambar'] ?? '',
-      averageRating: (json['average_rating'] ?? 0.0).toDouble(),
     );
   }
 }

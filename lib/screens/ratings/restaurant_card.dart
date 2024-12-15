@@ -1,6 +1,7 @@
 // restaurant_card.dart
 import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/models/ratings.dart';
+import 'package:jogjappetite_mobile/models/restaurant.dart';
 
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;

@@ -280,6 +280,7 @@ class _RestaurantRatingsPageState extends State<RestaurantRatingsPage> {
               ),
             ),
           ),
+
         ],
       ),
     );
