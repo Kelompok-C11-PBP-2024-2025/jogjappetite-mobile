@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/models/restaurant.dart';
 import 'package:jogjappetite_mobile/screens/ratings/restaurant_card.dart';
-import 'package:jogjappetite_mobile/screens/ratings/restaurant_ratings_page.dart';
 import 'package:jogjappetite_mobile/screens/restaurant/add_restaurant.dart';
 import 'package:jogjappetite_mobile/screens/restaurant/detail_restaurant.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -30,6 +29,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
   int totalItems = 0; // Add this variable
   bool get _hasReachedMax => filteredRestaurants.length >= totalItems;
   String? profileType;
+  String currentSearchQuery = '';
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -68,7 +70,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
     try {
       final response = await request.get(
-        "http://127.0.0.1:8000/restaurant/api/get-data?page=${currentPage + 1}&per_page=${perPage}"
+        "http://127.0.0.1:8000/restaurant/api/get-data?page=${currentPage + 1}&per_page=${perPage}&search=${Uri.encodeComponent(currentSearchQuery)}"
       );
 
       if (response != null) {
@@ -111,7 +113,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
     try {
       final response = await request.get(
-        "http://127.0.0.1:8000/restaurant/api/get-data?page=1&per_page=${perPage}"
+        "http://127.0.0.1:8000/restaurant/api/get-data?page=1&per_page=${perPage}&search=${Uri.encodeComponent(currentSearchQuery)}"
       );
 
       if (response != null) {
@@ -139,20 +141,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
   void filterRestaurants(String query) {
-    if (restaurantData == null) return;
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
 
-    setState(() {
-      if (query.isEmpty) {
-        filteredRestaurants = restaurantData!.restaurants;
-      } else {
-        filteredRestaurants = restaurantData!.restaurants
-            .where((restaurant) => restaurant.namaRestoran
-                .toLowerCase()
-                .contains(query.toLowerCase()))
-            .toList();
-      }
-      // Reset pagination when filtering
-      hasMoreData = filteredRestaurants.length < totalItems;
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        currentSearchQuery = query;
+      });
+      fetchMainPageData(context.read<CookieRequest>());
     });
   }
 
@@ -161,12 +156,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
     final request = context.watch<CookieRequest>();
     if (isLoading) {
       return const Scaffold(
+        backgroundColor: Colors.white,
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
     if (error != null) {
       return Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -189,6 +186,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: () => fetchMainPageData(request),
         child: CustomScrollView(
@@ -224,8 +222,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: RestaurantCard(
                       restaurant: restaurant,
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailRestaurantPage(
@@ -233,6 +231,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             ),
                           ),
                         );
+                        // If restaurant was deleted, refresh the page
+                        if (result == true) {
+                          fetchMainPageData(request);
+                        }
                       },
                     ),
                   );
@@ -258,13 +260,16 @@ class _RestaurantPageState extends State<RestaurantPage> {
       ),
       floatingActionButton: profileType == "owner"
         ? FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {  // Make this async
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AddRestaurantPage(),
                 ),
-              ).then((_) => fetchMainPageData(request)); // Refresh after adding
+              );
+              if (result == true) {  // Check if restaurant was added successfully
+                fetchMainPageData(request);
+              }
             },
             child: const Icon(Icons.add),
           )

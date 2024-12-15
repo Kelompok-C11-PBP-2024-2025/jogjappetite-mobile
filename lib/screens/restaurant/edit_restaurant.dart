@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:jogjappetite_mobile/models/restaurant.dart';
 
-class AddRestaurantPage extends StatefulWidget {
-  const AddRestaurantPage({super.key});
+class EditRestaurantPage extends StatefulWidget {
+  final Restaurant restaurant;
+
+  const EditRestaurantPage({super.key, required this.restaurant});
 
   @override
-  State<AddRestaurantPage> createState() => _AddRestaurantPageState();
+  State<EditRestaurantPage> createState() => _EditRestaurantPageState();
 }
 
-class _AddRestaurantPageState extends State<AddRestaurantPage> {
+class _EditRestaurantPageState extends State<EditRestaurantPage> {
   final _formKey = GlobalKey<FormState>();
-  String _namaRestoran = '';
-  String _lokasi = '';
-  String _gambar = '';
-  String _jenisSuasana = '';
-  int _keramaianRestoran = 1;
-  String _jenisPenyajian = '';
-  String _ayceAtauAlacarte = '';
-  int _hargaRataRataMakanan = 0;
+  late String _namaRestoran;
+  late String _lokasi;
+  late String _gambar;
+  late String _jenisSuasana;
+  late int _keramaianRestoran;
+  late String _jenisPenyajian;
+  late String _ayceAtauAlacarte;
+  late int _hargaRataRataMakanan;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize form fields with existing restaurant data
+    _namaRestoran = widget.restaurant.namaRestoran;
+    _lokasi = widget.restaurant.lokasi;
+    _gambar = widget.restaurant.gambar;
+    _jenisSuasana = widget.restaurant.jenisSuasana;
+    _keramaianRestoran = widget.restaurant.keramaianRestoran;
+    _jenisPenyajian = widget.restaurant.jenisPenyajian;
+    _ayceAtauAlacarte = widget.restaurant.ayceAtauAlacarte;
+    _hargaRataRataMakanan = widget.restaurant.hargaRataRataMakanan;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +45,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Add Restaurant'),
+        title: const Text('Edit Restaurant'),
       ),
       body: Form(
         key: _formKey,
@@ -37,6 +54,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
           child: Column(
             children: [
               TextFormField(
+                initialValue: _namaRestoran,
                 decoration: const InputDecoration(
                   labelText: 'Restaurant Name',
                   border: OutlineInputBorder(),
@@ -51,6 +69,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _lokasi,
                 decoration: const InputDecoration(
                   labelText: 'Location',
                   border: OutlineInputBorder(),
@@ -65,6 +84,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _gambar,
                 decoration: const InputDecoration(
                   labelText: 'Image URL',
                   border: OutlineInputBorder(),
@@ -79,6 +99,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _jenisSuasana,
                 decoration: const InputDecoration(
                   labelText: 'Atmosphere Type',
                   border: OutlineInputBorder(),
@@ -93,6 +114,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _keramaianRestoran.toString(),
                 decoration: const InputDecoration(
                   labelText: 'Crowded Level (1-5)',
                   border: OutlineInputBorder(),
@@ -112,6 +134,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _jenisPenyajian,
                 decoration: const InputDecoration(
                   labelText: 'Service Type',
                   border: OutlineInputBorder(),
@@ -126,6 +149,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _ayceAtauAlacarte,
                 decoration: const InputDecoration(
                   labelText: 'AYCE or A La Carte',
                   border: OutlineInputBorder(),
@@ -140,6 +164,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: _hargaRataRataMakanan.toString(),
                 decoration: const InputDecoration(
                   labelText: 'Average Price',
                   border: OutlineInputBorder(),
@@ -167,7 +192,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
 
                           try {
                             final response = await request.post(
-                              'http://127.0.0.1:8000/restaurant/api/owner/add/',
+                              'http://127.0.0.1:8000/restaurant/api/owner/${widget.restaurant.id}/edit/',
                               {
                                 'nama_restoran': _namaRestoran,
                                 'lokasi': _lokasi,
@@ -183,13 +208,11 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
                             if (response['success'] == true) {
                               if (!mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Restaurant added successfully'),
-                                ),
+                                const SnackBar(content: Text('Restaurant updated successfully')),
                               );
-                              Navigator.pop(context, true); // Return true to indicate success
+                              Navigator.pop(context, true);
                             } else {
-                              throw response['message'] ?? 'Failed to add restaurant';
+                              throw response['message'] ?? 'Failed to update restaurant';
                             }
                           } catch (e) {
                             if (!mounted) return;
@@ -211,7 +234,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(color: Colors.white))
-                      : const Text('Add Restaurant'),
+                      : const Text('Save Changes'),
                 ),
               ),
             ],

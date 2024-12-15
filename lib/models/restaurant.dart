@@ -108,19 +108,23 @@ DetailRestaurantResponse welcomeFromJson(String str) => DetailRestaurantResponse
 class DetailRestaurantResponse {
     bool success;
     Restaurant restaurant;
+    String profileType;
 
     DetailRestaurantResponse({
         required this.success,
         required this.restaurant,
+        required this.profileType,
     });
 
     factory DetailRestaurantResponse.fromJson(Map<String, dynamic> json) => DetailRestaurantResponse(
         success: json["success"],
         restaurant: Restaurant.fromJson(json["restaurant"]),
+        profileType: json["profile_type"],
     );
 
     Map<String, dynamic> toJson() => {
         "success": success,
         "restaurant": restaurant.toJson(),
+        "profile_type": profileType,
     };
 }
