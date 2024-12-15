@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:jogjappetite_mobile/models/ratings.dart';
-import 'package:jogjappetite_mobile/screens/ratings/animated_sliver_app_bar.dart';
 import 'package:jogjappetite_mobile/screens/ratings/rating_card.dart';
 import 'package:jogjappetite_mobile/screens/ratings/restaurant_card.dart';
 import 'package:jogjappetite_mobile/screens/ratings/restaurant_ratings_page.dart';
@@ -90,7 +89,6 @@ class _RatingsMainPageState extends State<RatingsMainPage> {
         onRefresh: fetchMainPageData,
         child: CustomScrollView(
           slivers: [
-            RatingsAppBar(),
             SliverToBoxAdapter(
               child: Padding(
                 padding:
