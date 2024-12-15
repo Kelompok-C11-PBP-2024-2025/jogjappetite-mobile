@@ -7,6 +7,9 @@ class UserProfile {
   final String fullName;
   final String userType;
 
+  // Tambahkan static variable untuk menyimpan instance current user
+  static UserProfile? _currentUser;
+
   UserProfile({
     required this.id,
     required this.username,
@@ -14,6 +17,16 @@ class UserProfile {
     required this.fullName,
     required this.userType,
   });
+
+  // Getter untuk current user type
+  static String? getUserType() {
+    return _currentUser?.userType;
+  }
+
+  // Setter untuk mengatur current user
+  static void setCurrentUser(UserProfile? user) {
+    _currentUser = user;
+  }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         id: json["id"],
@@ -30,6 +43,7 @@ class UserProfile {
         "full_name": fullName,
         "user_type": userType,
       };
+  static UserProfile? get currentUser => _currentUser;
 }
 
 UserProfile userProfileFromJson(String str) =>
