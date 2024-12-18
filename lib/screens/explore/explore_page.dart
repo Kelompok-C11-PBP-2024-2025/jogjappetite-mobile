@@ -167,7 +167,7 @@ class ExplorePage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: BottomNavbar(),
+      // bottomNavigationBar: BottomNavbar(),
     );
   }
 }
