@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:jogjappetite_mobile/screens/explore/show_cluster.dart';
 import 'package:jogjappetite_mobile/widgets/navbar.dart';
 
 class ExplorePage extends StatelessWidget {
+  // Tambahkan mapping untuk cluster names
+  final Map<String, String> clusterMapping = {
+    'Rice': 'nasi',
+    'Noodles': 'mie',
+    'Meatball': 'bakso',
+    'Soto': 'soto',
+    'Snacks': 'snacks',
+    'Sweets': 'manis-manis',
+    'Beverages': 'minuman',
+    'Indonesian': 'indonesian',
+    'Japanese': 'japanese',
+    'Asian': 'asian',
+    'Western': 'western'
+  };
+
   // Daftar gambar untuk setiap card
   final List<String> imageUrls = [
     'https://i.pinimg.com/564x/5e/06/b4/5e06b47cac34547f981c479cf4943b0f.jpg',
@@ -56,57 +72,91 @@ class ExplorePage extends StatelessWidget {
       body: ListView.builder(
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return Card(
-            elevation: 5, // Menambahkan bayangan
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            margin: EdgeInsets.all(10),
-            child: Row(
-              children: [
-                // Gambar di sebelah kiri
-                Container(
-                  width: 100, // Lebar gambar
-                  height: 100, // Tinggi gambar
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(imageUrls[index]), // Menampilkan gambar dari URL
-                      fit: BoxFit.cover, // Menyesuaikan gambar agar tidak terdistorsi
+          return GestureDetector(
+            onTap: () {
+              // Gunakan cluster mapping untuk mendapatkan key yang sesuai
+              String clusterKey = clusterMapping[cardNames[index]] ?? cardNames[index].toLowerCase();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ShowClusterPage(
+                    clusterName: clusterKey,
+                  ),
+                ),
+              );
+            },
+            child: Card(
+              elevation: 5, // Menambahkan bayangan
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              margin: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  // Gambar di sebelah kiri
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                SizedBox(width: 10), // Memberikan ruang antara gambar dan teks
-                
-                // Kolom untuk nama dan deskripsi
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Nama Card di bawah gambar
-                      Text(
-                        cardNames[index],
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        imageUrls[index],
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: Icon(Icons.error),
+                          );
+                        },
                       ),
-                      SizedBox(height: 5), // Memberikan ruang antara nama dan deskripsi
-                      
-                      // Deskripsi card
-                      Text(
-                        descriptions[index],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                        ),
-                        maxLines: 3, // Membatasi deskripsi agar tidak terlalu panjang
-                        overflow: TextOverflow.ellipsis, // Menambahkan elipsis jika teks terlalu panjang
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(width: 10), // Memberikan ruang antara gambar dan teks
+                  
+                  // Kolom untuk nama dan deskripsi
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Nama Card di bawah gambar
+                        Text(
+                          cardNames[index],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 5), // Memberikan ruang antara nama dan deskripsi
+                        
+                        // Deskripsi card
+                        Text(
+                          descriptions[index],
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                          maxLines: 3, // Membatasi deskripsi agar tidak terlalu panjang
+                          overflow: TextOverflow.ellipsis, // Menambahkan elipsis jika teks terlalu panjang
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

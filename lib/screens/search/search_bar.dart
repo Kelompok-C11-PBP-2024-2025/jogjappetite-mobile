@@ -5,8 +5,8 @@ import 'package:jogjappetite_mobile/screens/search/search_functions.dart';
 
 class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final TextEditingController searchController;
-  final Function(String, CookieRequest, BuildContext) onSearchFood;
-  final Function(String, CookieRequest, BuildContext) onSearchRestaurant;
+  final Function(String, BuildContext) onSearchFood;
+  final Function(String, BuildContext) onSearchRestaurant;
   final Function(String, CookieRequest) onSaveSearchHistory;
 
   SearchAppBar({
@@ -50,7 +50,7 @@ class _SearchBar extends State<SearchAppBar> {
                   onPressed: () async {
                     String query = widget.searchController.text;
                     await widget.onSaveSearchHistory(query, request);
-                    await widget.onSearchFood(query, request, context);
+                    await widget.onSearchFood(query, context);
                   },
                 ),
               ),
@@ -62,7 +62,7 @@ class _SearchBar extends State<SearchAppBar> {
                 onPressed: () async {
                   String query = widget.searchController.text;
                   await widget.onSaveSearchHistory(query, request);
-                  await widget.onSearchRestaurant(query, request, context);
+                  await widget.onSearchRestaurant(query, context);
                 },
               ),
               Expanded(

@@ -18,8 +18,6 @@ class _SearchResultRestoState extends State<SearchResultResto> {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
     return Scaffold(
       appBar: SearchAppBar(
         searchController: _searchController,
@@ -33,8 +31,8 @@ class _SearchResultRestoState extends State<SearchResultResto> {
           final restaurant = widget.data[index];
           return ListTile(
             title: Text(restaurant['nama_restoran']),
-            subtitle: Text(restaurant['address']),
-            trailing: Text(restaurant['phone']),
+            subtitle: Text(restaurant['lokasi']),
+            trailing: Text(restaurant['jenis_suasana']),
           );
         },
       ),

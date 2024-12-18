@@ -1,133 +1,164 @@
-// To parse this JSON data, do
-//
-//     final ratings = ratingsFromJson(jsonString);
+// models/ratings.dart
+import 'package:jogjappetite_mobile/models/restaurant.dart';
 
-import 'dart:convert';
+class MainPageResponse {
+  final List<Rating> latestRatings;
+  final List<Rating>? userRatings;
+  final List<Restaurant> highestRatedRestaurants;
+  final bool isAuthenticated;
 
-List<Ratings> ratingsFromJson(String str) =>
-    List<Ratings>.from(json.decode(str).map((x) => Ratings.fromJson(x)));
-
-String ratingsToJson(List<Ratings> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-class Ratings {
-  int id;
-  String userInitials;
-  String username;
-  String menuReview;
-  String restaurantReview;
-  int rating;
-  String pesanRating;
-  String createdAt;
-
-  Ratings({
-    required this.id,
-    required this.userInitials,
-    required this.username,
-    required this.menuReview,
-    required this.restaurantReview,
-    required this.rating,
-    required this.pesanRating,
-    required this.createdAt,
+  MainPageResponse({
+    required this.latestRatings,
+    this.userRatings,
+    required this.highestRatedRestaurants,
+    required this.isAuthenticated,
   });
 
-  factory Ratings.fromJson(Map<String, dynamic> json) => Ratings(
-        id: json["id"],
-        userInitials: json["user_initials"],
-        username: json["username"],
-        menuReview: json["menu_review"],
-        restaurantReview: json["restaurant_review"],
-        rating: json["rating"],
-        pesanRating: json["pesan_rating"],
-        createdAt: json["created_at"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "user_initials": userInitials,
-        "username": username,
-        "menu_review": menuReview,
-        "restaurant_review": restaurantReview,
-        "rating": rating,
-        "pesan_rating": pesanRating,
-        "created_at": createdAt,
-      };
-}
-
-class RestaurantRatingsResponse {
-  final Restaurant restaurant;
-  final List<Ratings> ratings;
-  final List<Menu> menus;
-  final double averageRating;
-  final int reviewsCount;
-
-  RestaurantRatingsResponse({
-    required this.restaurant,
-    required this.ratings,
-    required this.menus,
-    required this.averageRating,
-    required this.reviewsCount,
-  });
-
-  factory RestaurantRatingsResponse.fromJson(Map<String, dynamic> json) {
-    return RestaurantRatingsResponse(
-      restaurant: Restaurant.fromJson(json['restaurant']),
-      ratings: (json['ratings'] as List)
-          .map((rating) => Ratings.fromJson(rating))
+  factory MainPageResponse.fromJson(Map<String, dynamic> json) {
+    return MainPageResponse(
+      latestRatings: (json['latest_ratings'] as List)
+          .map((rating) => Rating.fromJson(rating))
           .toList(),
-      menus:
-          (json['menus'] as List).map((menu) => Menu.fromJson(menu)).toList(),
-      averageRating: json['average_rating'].toDouble(),
-      reviewsCount: json['reviews_count'],
+      userRatings: json['user_ratings'] != null
+          ? (json['user_ratings'] as List)
+              .map((rating) => Rating.fromJson(rating))
+              .toList()
+          : null,
+      highestRatedRestaurants: (json['highest_rated_restaurants'] as List)
+          .map((restaurant) => Restaurant.fromJson(restaurant))
+          .toList(),
+      isAuthenticated: json['is_authenticated'] ?? false,
     );
   }
 }
 
-class Restaurant {
+class Rating {
   final int id;
-  final String nama;
-  final String deskripsi;
-  final String alamat;
+  final String userInitials;
+  final String username;
+  final String menuReview;
+  final String? restaurantReview;
+  final int rating;
+  final String pesanRating;
+  final DateTime createdAt;
+  // Add these new fields
+  final int restaurantId;
+  final String restaurantName;
 
-  Restaurant({
+  Rating({
     required this.id,
-    required this.nama,
-    required this.deskripsi,
-    required this.alamat,
+    required this.userInitials,
+    required this.username,
+    required this.menuReview,
+    this.restaurantReview,
+    required this.rating,
+    required this.pesanRating,
+    required this.createdAt,
+    required this.restaurantId, // New field
+    required this.restaurantName, // New field
   });
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
-      id: json['id'],
-      nama: json['nama'],
-      deskripsi: json['deskripsi'],
-      alamat: json['alamat'],
+  factory Rating.fromJson(Map<String, dynamic> json) {
+    print('Parsing Rating JSON: ${json['restaurant_id']}'); // Debug line
+    return Rating(
+      id: json['id'] ?? 0,
+      userInitials: json['user_initials'] ?? '',
+      username: json['username'] ?? '',
+      menuReview: json['menu_review'] ?? '',
+      restaurantReview: json['restaurant_review'],
+      rating: json['rating'] ?? 0,
+      pesanRating: json['pesan_rating'] ?? '',
+      createdAt: DateTime.parse(
+          json['created_at'] ?? DateTime.now().toIso8601String()),
+      restaurantId: json['restaurant_id'] ?? 0,
+      restaurantName: json['restaurant_name'] ?? '',
     );
   }
 }
 
 class Menu {
   final int id;
-  final String nama;
-  final String deskripsi;
-  final String harga;
-  final List<String> clusters;
+  final String namaMenu;
+  final int harga;
+  final List<String> categories;
 
   Menu({
     required this.id,
-    required this.nama,
-    required this.deskripsi,
+    required this.namaMenu,
     required this.harga,
-    required this.clusters,
+    required this.categories,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) {
     return Menu(
       id: json['id'],
-      nama: json['nama'],
-      deskripsi: json['deskripsi'],
+      namaMenu: json['nama_menu'],
       harga: json['harga'],
-      clusters: List<String>.from(json['clusters']),
+      categories: List<String>.from(json['categories']),
+    );
+  }
+}
+
+// Model untuk Rating
+class RestaurantRating {
+  final int id;
+  final String userInitials;
+  final String username;
+  final String menuReview;
+  final String? restaurantReview;
+  final int rating;
+  final String pesanRating;
+  final String createdAt;
+
+  RestaurantRating({
+    required this.id,
+    required this.userInitials,
+    required this.username,
+    required this.menuReview,
+    this.restaurantReview,
+    required this.rating,
+    required this.pesanRating,
+    required this.createdAt,
+  });
+
+  factory RestaurantRating.fromJson(Map<String, dynamic> json) {
+    return RestaurantRating(
+      id: json['id'],
+      userInitials: json['user_initials'],
+      username: json['username'],
+      menuReview: json['menu_review'],
+      restaurantReview: json['restaurant_review'],
+      rating: json['rating'],
+      pesanRating: json['pesan_rating'],
+      createdAt: json['created_at'],
+    );
+  }
+}
+
+class RestaurantDetails {
+  final Restaurant restaurant;
+  final List<Menu> menus;
+  final List<RestaurantRating> ratings;
+  final double averageRating;
+  final int reviewsCount;
+
+  RestaurantDetails({
+    required this.restaurant,
+    required this.menus,
+    required this.ratings,
+    required this.averageRating,
+    required this.reviewsCount,
+  });
+
+  factory RestaurantDetails.fromJson(Map<String, dynamic> json) {
+    return RestaurantDetails(
+      restaurant: Restaurant.fromJson(json['restaurant']),
+      menus: (json['menus'] as List).map((m) => Menu.fromJson(m)).toList(),
+      ratings: (json['ratings'] as List)
+          .map((r) => RestaurantRating.fromJson(r))
+          .toList(),
+      averageRating: json['average_rating'].toDouble(),
+      reviewsCount: json['reviews_count'],
     );
   }
 }
