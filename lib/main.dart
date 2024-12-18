@@ -3,7 +3,7 @@ import 'package:jogjappetite_mobile/screens/authentication/login.dart';
 import 'package:jogjappetite_mobile/screens/explore/explore_page.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:jogjappetite_mobile/screens/home_dummy.dart';
+import 'package:jogjappetite_mobile/screens/main_page.dart';
 
 // DUMMY PAGE
 void main() {
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               const Color(0xFFFFF8F0), // Latar belakang soft peach
           cardColor: const Color(0xFFFFFFFF), // Warna kartu
         ),
-        home: ExplorePage(),
+        home: MainPage(),
       ),
     );
   }
