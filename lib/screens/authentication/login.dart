@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/screens/authentication/menu.dart';
-import 'package:jogjappetite_mobile/screens/home_dummy.dart';
+import 'package:jogjappetite_mobile/screens/explore/explore_page.dart';
+import 'package:jogjappetite_mobile/screens/main_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -186,7 +187,8 @@ class _LoginPageState extends State<LoginPage> {
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => HomePage()),
+                                              builder: (context) =>
+                                                  ExplorePage()),
                                         );
                                         ScaffoldMessenger.of(context)
                                           ..hideCurrentSnackBar()

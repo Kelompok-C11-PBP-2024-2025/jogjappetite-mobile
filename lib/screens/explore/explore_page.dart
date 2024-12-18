@@ -63,7 +63,7 @@ class ExplorePage extends StatelessWidget {
     'Western cuisine offering generous portions with a focus on key ingredients like meat, cheese, and bread. The dishes are often characterized by bold flavors and modern cooking techniques.'
   ];
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +75,8 @@ class ExplorePage extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               // Gunakan cluster mapping untuk mendapatkan key yang sesuai
-              String clusterKey = clusterMapping[cardNames[index]] ?? cardNames[index].toLowerCase();
+              String clusterKey = clusterMapping[cardNames[index]] ??
+                  cardNames[index].toLowerCase();
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -125,8 +126,9 @@ class ExplorePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10), // Memberikan ruang antara gambar dan teks
-                  
+                  SizedBox(
+                      width: 10), // Memberikan ruang antara gambar dan teks
+
                   // Kolom untuk nama dan deskripsi
                   Expanded(
                     child: Column(
@@ -140,8 +142,10 @@ class ExplorePage extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        SizedBox(height: 5), // Memberikan ruang antara nama dan deskripsi
-                        
+                        SizedBox(
+                            height:
+                                5), // Memberikan ruang antara nama dan deskripsi
+
                         // Deskripsi card
                         Text(
                           descriptions[index],
@@ -149,8 +153,10 @@ class ExplorePage extends StatelessWidget {
                             fontSize: 14,
                             color: Colors.grey[700],
                           ),
-                          maxLines: 3, // Membatasi deskripsi agar tidak terlalu panjang
-                          overflow: TextOverflow.ellipsis, // Menambahkan elipsis jika teks terlalu panjang
+                          maxLines:
+                              3, // Membatasi deskripsi agar tidak terlalu panjang
+                          overflow: TextOverflow
+                              .ellipsis, // Menambahkan elipsis jika teks terlalu panjang
                         ),
                       ],
                     ),
