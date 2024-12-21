@@ -1,4 +1,6 @@
 # Jogjappetite Mobile
+## Aplikasi
+Aplikasi dapat dinunduh melalui bagian [releases](https://github.com/Kelompok-C11-PBP-2024-2025/jogjappetite-mobile/releases) atau melalui [link ini](https://build.appcenter.ms/v0.1/apps/7cbce0ca-ae11-4fe5-889b-d216864ee2e5/branches/main/badge) pada Microsoft AppCenter
 ## Anggota Kelompok C11
 - [Dinda Dinanti](https://github.com/dinan26) (2306245440)
 - [Irfan Rizqi Nurrahman ](https://github.com/irfanrizqinr)(2306216724)
