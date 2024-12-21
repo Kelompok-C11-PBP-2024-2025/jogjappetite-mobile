@@ -4,8 +4,10 @@ import 'package:jogjappetite_mobile/screens/explore/explore_page.dart';
 import 'package:jogjappetite_mobile/screens/search/search_page.dart';
 import 'package:jogjappetite_mobile/screens/ratings/ratings_main_page.dart';
 import 'package:jogjappetite_mobile/screens/restaurant/restaurant_page.dart';
+import 'package:jogjappetite_mobile/screens/favorite/favorite_page.dart';
 import 'package:jogjappetite_mobile/screens/authentication/login.dart';
 import 'package:jogjappetite_mobile/screens/authentication/userprofilepage.dart';
+
 
 class MainPage extends StatefulWidget {
   @override
@@ -19,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     ExplorePage(),
     SearchPage(),
-    Center(child: Text('Favorites Page - Coming Soon')),
+    FavoritePage(),
     RatingsMainPage(),
     RestaurantPage(),
   ];
