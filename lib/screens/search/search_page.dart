@@ -12,6 +12,7 @@ import 'package:jogjappetite_mobile/models/ratings.dart'; // This contains the R
 import 'package:jogjappetite_mobile/screens/ratings/restaurant_card.dart';
 import 'package:jogjappetite_mobile/screens/ratings/restaurant_ratings_page.dart'; // Page restaurant yang akan muncul setelah di klik
 
+import 'package:jogjappetite_mobile/utils/category_utils.dart' as categoryUtils;
 
 class SearchPage extends StatefulWidget {
   @override
@@ -137,14 +138,19 @@ Widget build(BuildContext context) {
                 'Beverages', 'Indonesian', 'Japanese', 'Asian', 'Western'
               ].map((category) => Padding(
                     padding: EdgeInsets.only(right: 6.0),
-                    child: Chip(
-                      label: Text(
-                        category,
-                        style: TextStyle(fontSize: 12.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        categoryUtils.navigateToCluster(context, category);
+                      },
+                      child: Chip(
+                        label: Text(
+                          category,
+                          style: TextStyle(fontSize: 12.0),
+                        ),
+                        backgroundColor: Colors.orange[100],
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                       ),
-                      backgroundColor: Colors.orange[100],
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                     ),
                   )),
             ],

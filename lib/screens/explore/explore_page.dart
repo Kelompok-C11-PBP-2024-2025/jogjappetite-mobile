@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jogjappetite_mobile/screens/explore/show_cluster.dart';
 import 'package:jogjappetite_mobile/widgets/navbar.dart';
+import 'package:jogjappetite_mobile/utils/category_utils.dart' as categoryUtils;
 
 class ExplorePage extends StatelessWidget {
-  // Tambahkan mapping untuk cluster names
-  final Map<String, String> clusterMapping = {
-    'Rice': 'nasi',
-    'Noodles': 'mie',
-    'Meatball': 'bakso',
-    'Soto': 'soto',
-    'Snacks': 'snacks',
-    'Sweets': 'manis-manis',
-    'Beverages': 'minuman',
-    'Indonesian': 'indonesian',
-    'Japanese': 'japanese',
-    'Asian': 'asian',
-    'Western': 'western'
-  };
-
   // Daftar gambar untuk setiap card
   final List<String> imageUrls = [
     'https://i.pinimg.com/564x/5e/06/b4/5e06b47cac34547f981c479cf4943b0f.jpg',
@@ -74,17 +60,7 @@ class ExplorePage extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              // Gunakan cluster mapping untuk mendapatkan key yang sesuai
-              String clusterKey = clusterMapping[cardNames[index]] ??
-                  cardNames[index].toLowerCase();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ShowClusterPage(
-                    clusterName: clusterKey,
-                  ),
-                ),
-              );
+              categoryUtils.navigateToCluster(context, cardNames[index]);
             },
             child: Card(
               elevation: 5, // Menambahkan bayangan
