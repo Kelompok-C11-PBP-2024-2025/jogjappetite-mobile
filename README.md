@@ -1,3 +1,6 @@
+![Pre-Release](https://github.com/Kelompok-C11-PBP-2024-2025/jogjappetite-mobile/actions/workflows/pre-release.yml/badge.svg)
+![Release](https://github.com/Kelompok-C11-PBP-2024-2025/jogjappetite-mobile/actions/workflows/release.yml/badge.svg)
+![Staging](https://github.com/Kelompok-C11-PBP-2024-2025/jogjappetite-mobile/actions/workflows/staging.yml/badge.svg)
 [![Build status](https://build.appcenter.ms/v0.1/apps/7cbce0ca-ae11-4fe5-889b-d216864ee2e5/branches/main/badge)](https://appcenter.ms)
 
 # Jogjappetite Mobile
