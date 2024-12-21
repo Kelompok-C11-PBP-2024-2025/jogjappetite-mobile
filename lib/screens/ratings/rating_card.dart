@@ -19,8 +19,8 @@ class RatingCard extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantRatingsPage(
-          restaurantId: rating.restaurantId,
-          restaurantName: rating.restaurantName,
+          restaurantId: rating.restaurantId!,
+          restaurantName: rating.restaurantName!,
         ),
       ),
     );
@@ -33,7 +33,7 @@ class RatingCard extends StatelessWidget {
           radius: 16,
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           child: Text(
-            rating.userInitials,
+            rating.userInitials ?? '',
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).colorScheme.onPrimaryContainer,
@@ -46,13 +46,14 @@ class RatingCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                rating.username,
+                rating.username ?? 'Anonymous',
                 style: Theme.of(context).textTheme.titleSmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                DateFormat('MMM d, y').format(rating.createdAt),
+                DateFormat('MMM d, y')
+                    .format(rating.createdAt ?? DateTime.now()),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -67,7 +68,7 @@ class RatingCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          rating.restaurantName,
+          rating.restaurantName ?? 'Unknown Restaurant',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -87,7 +88,7 @@ class RatingCard extends StatelessWidget {
         ],
         const SizedBox(height: 4),
         Text(
-          'Menu: ${rating.menuReview}',
+          'Menu: ${rating.menuReview ?? 'No menu available'}',
           style: Theme.of(context).textTheme.bodyMedium,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -101,7 +102,7 @@ class RatingCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
         return Icon(
-          index < rating.rating ? Icons.star : Icons.star_border,
+          index < (rating.rating ?? 0) ? Icons.star : Icons.star_border,
           color: Colors.amber,
           size: 16,
         );
@@ -113,9 +114,10 @@ class RatingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _navigateToRestaurantRatings(context),
+      behavior: HitTestBehavior.opaque,
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        elevation: 1,
+        elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -136,7 +138,7 @@ class RatingCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      rating.pesanRating,
+                      rating.pesanRating ?? 'No message available',
                       style: Theme.of(context).textTheme.bodySmall,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

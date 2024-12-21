@@ -40,6 +40,9 @@ class _RatingsMainPageState extends State<RatingsMainPage> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(
+            'Latest Ratings from API: ${data['latest_ratings']}'); // Log hanya bagian latest_ratings
+
         setState(() {
           mainPageData = MainPageResponse.fromJson(data);
           isLoading = false;
@@ -205,6 +208,7 @@ class AutoScrollingReviews extends StatefulWidget {
   State<AutoScrollingReviews> createState() => _AutoScrollingReviewsState();
 }
 
+// Modified _AutoScrollingReviewsState
 class _AutoScrollingReviewsState extends State<AutoScrollingReviews> {
   late PageController _pageController;
   late Timer _timer;
@@ -222,16 +226,20 @@ class _AutoScrollingReviewsState extends State<AutoScrollingReviews> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (_currentPage < widget.ratings.length - 1) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
+      if (mounted && widget.ratings.isNotEmpty) {
+        if (_currentPage < widget.ratings.length - 1) {
+          _currentPage++;
+        } else {
+          _currentPage = 0;
+        }
+        if (_pageController.hasClients) {
+          _pageController.animateToPage(
+            _currentPage,
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeIn,
+          );
+        }
       }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeIn,
-      );
     });
   }
 
@@ -244,6 +252,12 @@ class _AutoScrollingReviewsState extends State<AutoScrollingReviews> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.ratings.isEmpty) {
+      return const Center(
+        child: Text('No reviews available'),
+      );
+    }
+
     return PageView.builder(
       controller: _pageController,
       itemCount: widget.ratings.length,
@@ -253,9 +267,15 @@ class _AutoScrollingReviewsState extends State<AutoScrollingReviews> {
         });
       },
       itemBuilder: (context, index) {
+        final rating = widget.ratings[index];
+
+        // Debugging data sebelum diteruskan ke RatingCard
+        // print(
+        //     'AutoScrollingReviews Data: restaurantId=${rating.restaurantId}, restaurantName=${rating.restaurantName}');
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: RatingCard(rating: widget.ratings[index]),
+          child: RatingCard(rating: rating),
         );
       },
     );
